@@ -1,4 +1,4 @@
-from fastapi import APIRouter, HTTPException, Depends
+from fastapi import APIRouter, HTTPException, Depends, Query
 from sqlalchemy.orm import Session
 
 from database import get_db
@@ -18,6 +18,8 @@ router = APIRouter(
 def get_students(
     name: str | None = None,
     course: str | None = None,
+    skip: int = Query(0, ge=0),
+    limit: int = Query(10, gt=0),
     db: Session = Depends(get_db),
     current_user: str = Depends(get_current_user)
 ):
@@ -35,7 +37,7 @@ def get_students(
     if course is not None:
         query = query.filter(StudentDB.course.ilike(f"%{course}%"))
 
-    students = query.all()
+    students = query.offset(skip).limit(limit).all()
 
     return students
 
