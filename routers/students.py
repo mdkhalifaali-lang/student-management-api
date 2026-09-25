@@ -68,6 +68,29 @@ def add_student(
     }
 
 
+@router.get("/{student_id}", response_model=StudentResponse)
+def get_student(
+    student_id: int,
+    db: Session = Depends(get_db),
+    current_user: str = Depends(get_current_user)
+):
+    user = db.query(UserDB).filter(
+        UserDB.username == current_user
+    ).first()
+
+    student = db.query(StudentDB).filter(
+        StudentDB.id == student_id,
+        StudentDB.user_id == user.id
+    ).first()
+
+    if student is None:
+        raise HTTPException(
+            status_code=404,
+            detail="Student not found"
+        )
+
+    return student
+
 @router.put("/{student_id}", response_model=StudentCreateResponse)
 def update_student(
     student_id: int,
