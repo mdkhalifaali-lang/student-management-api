@@ -20,6 +20,8 @@ def get_students(
     course: str | None = None,
     skip: int = Query(0, ge=0),
     limit: int = Query(10, gt=0),
+    sort_by: str = "id",
+    order: str = "asc",
     db: Session = Depends(get_db),
     current_user: str = Depends(get_current_user)
 ):
@@ -36,6 +38,24 @@ def get_students(
 
     if course is not None:
         query = query.filter(StudentDB.course.ilike(f"%{course}%"))
+
+    sort_fields = {
+        "id": StudentDB.id,
+        "name": StudentDB.name,
+        "age": StudentDB.age,
+        "course": StudentDB.course,
+    }
+    if sort_by not in sort_fields:
+        raise HTTPException(status_code=400, detail="Invalid sort field")
+
+    normalized_order = order.lower()
+    if normalized_order not in {"asc", "desc"}:
+        raise HTTPException(status_code=400, detail="Invalid sort order")
+
+    sort_column = sort_fields[sort_by]
+    query = query.order_by(
+        sort_column.asc() if normalized_order == "asc" else sort_column.desc()
+    )
 
     students = query.offset(skip).limit(limit).all()
 
