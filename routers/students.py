@@ -16,6 +16,8 @@ router = APIRouter(
 
 @router.get("/", response_model=list[StudentResponse])
 def get_students(
+    name: str | None = None,
+    course: str | None = None,
     db: Session = Depends(get_db),
     current_user: str = Depends(get_current_user)
 ):
@@ -23,9 +25,17 @@ def get_students(
         UserDB.username == current_user
     ).first()
 
-    students = db.query(StudentDB).filter(
+    query = db.query(StudentDB).filter(
         StudentDB.user_id == user.id
-    ).all()
+    )
+
+    if name is not None:
+        query = query.filter(StudentDB.name.ilike(f"%{name}%"))
+
+    if course is not None:
+        query = query.filter(StudentDB.course.ilike(f"%{course}%"))
+
+    students = query.all()
 
     return students
 
