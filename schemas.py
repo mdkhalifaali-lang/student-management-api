@@ -1,4 +1,4 @@
-from pydantic import BaseModel, Field, field_validator
+from pydantic import BaseModel, ConfigDict, Field, field_validator
 
 
 class Student(BaseModel):
@@ -20,13 +20,12 @@ class StudentResponse(BaseModel):
     age: int
     course: str
 
-    class Config:
-        from_attributes = True
-        
+    model_config = ConfigDict(from_attributes=True)
+
 class StudentCreateResponse(BaseModel):
     message: str
     student: StudentResponse
-       
+
 class UserCreate(BaseModel):
     username: str = Field(min_length=3)
     password: str = Field(min_length=6)
