@@ -23,7 +23,10 @@ pwd_context = CryptContext(
     deprecated="auto"
 )
 
-SECRET_KEY = "my-super-secret-key"
+SECRET_KEY = os.getenv("SECRET_KEY")
+if not SECRET_KEY:
+    raise RuntimeError("SECRET_KEY must be set in the environment or .env file")
+
 ALGORITHM = "HS256"
 ACCESS_TOKEN_EXPIRE_MINUTES = 30
 security = HTTPBearer()

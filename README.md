@@ -41,8 +41,8 @@ student-management-api/
 ├── models.py
 ├── auth_models.py
 ├── schemas.py
+├── requirements.txt
 ├── requirements-dev.txt
-├── .env
 ├── .gitignore
 │
 ├── routers/
@@ -130,10 +130,10 @@ The API also ensures that users can access and modify only their own student rec
 Create a `.env` file in the project root:
 
 ```env
-SECRET_KEY=your-secret-key
+SECRET_KEY=<your-long-random-secret>
 ```
 
-The `.env` file is excluded from Git using `.gitignore`.
+Use a strong random value for `SECRET_KEY`. The application exits with an error if it is missing. Keep the `.env` file private; it is excluded from Git using `.gitignore`.
 
 ## Installation
 
@@ -156,7 +156,13 @@ Activate it on Windows:
 venv\Scripts\activate
 ```
 
-Install the dependencies:
+Install the runtime dependencies:
+
+```bash
+pip install -r requirements.txt
+```
+
+To run the test suite, install the development and testing dependencies (including the runtime dependencies):
 
 ```bash
 pip install -r requirements-dev.txt
@@ -200,7 +206,7 @@ Current test result:
 
 * Passwords are stored as bcrypt hashes rather than plain text.
 * JWT authentication protects student endpoints.
-* The JWT secret is loaded from an environment variable.
+* The JWT secret is read from the `SECRET_KEY` environment variable (or the local `.env` file) and the application refuses to start if it is missing.
 * `.env` and the local SQLite database are excluded from Git.
 
 ## Project Status
