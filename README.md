@@ -43,6 +43,7 @@ student-management-api/
 ├── schemas.py
 ├── requirements.txt
 ├── requirements-dev.txt
+|-- render.yaml
 ├── .gitignore
 │
 ├── routers/
@@ -187,6 +188,19 @@ Interactive Swagger documentation:
 ```text
 http://127.0.0.1:8000/docs
 ```
+
+## Live Deployment
+
+The API is deployed on Render:
+
+* Live API: [https://student-management-api-nvdl.onrender.com](https://student-management-api-nvdl.onrender.com)
+* Swagger / API documentation: [https://student-management-api-nvdl.onrender.com/docs](https://student-management-api-nvdl.onrender.com/docs)
+
+### Deploying to Render
+
+The repository includes `render.yaml`, which configures the Render web service, installs dependencies from `requirements.txt`, starts the application with Uvicorn, and generates the `SECRET_KEY` environment variable. To deploy, connect this repository to Render and create the service from the existing Blueprint configuration in `render.yaml`. Keep `SECRET_KEY` in Render's environment configuration; never commit its value or store it in the repository.
+
+The current Render free deployment uses SQLite on an ephemeral filesystem. Database data may be lost when the service restarts or is redeployed.
 
 ## Running Tests
 
